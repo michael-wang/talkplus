@@ -1,5 +1,7 @@
 package com.talkplus.app;
 
+import java.util.Random;
+
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -52,7 +54,12 @@ public class ChatActivity extends ListActivity {
         channelName.setText(channel.name);
         
         loader = new LoaderThread();
-        loader.enteringChatRoom("test", channel, new MyChannelEventHandler());
+        loader.enteringChatRoom(getUserName(), channel, new MyChannelEventHandler());
+    }
+    
+    private String getUserName() {
+    	Random r = new Random();
+    	return "test" + r.nextInt(1000);
     }
     
     @Override
