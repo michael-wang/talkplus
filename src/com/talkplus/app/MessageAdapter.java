@@ -22,6 +22,7 @@ public class MessageAdapter extends BaseAdapter {
 	}
 	
 	public void add(ChatMessage msg) {
+		Log.d(TAG, "adapter msg:" + msg);
 		messages.add(msg);
 		notifyDataSetChanged();
 	}
@@ -58,7 +59,7 @@ public class MessageAdapter extends BaseAdapter {
 		
 		ChatMessage m = messages.get(position);
 		Log.d(TAG, "adapter getView position:" + position + ",holder:" + holder);
-		holder.icon.setImageResource(m.iconRes);
+		holder.icon.setImageResource(R.drawable.user);
 		holder.name.setText(m.name);
 		holder.message.setText(m.message);
 		

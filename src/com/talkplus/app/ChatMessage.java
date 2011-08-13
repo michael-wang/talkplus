@@ -11,4 +11,9 @@ public class ChatMessage {
 		this.name = name;
 		message = msg;
 	}
+	@Override
+	public String toString() {
+		return "ChatMessage name:" + name + ",msg:" + message;
+	}
+	
 }

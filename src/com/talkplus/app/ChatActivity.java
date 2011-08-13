@@ -1,13 +1,17 @@
 package com.talkplus.app;
 
-import java.util.Random;
-
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.talkplus.lib.ChannelEventHandler;
 
 public class ChatActivity extends ListActivity {
 	
@@ -19,10 +23,22 @@ public class ChatActivity extends ListActivity {
 	private Channel channel;
 	private TextView channelName;
 	private MessageAdapter adapter;
+	private LoaderThread loader;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatroom);
+        
+        Button send = (Button)findViewById(R.id.send);
+        final EditText message = (EditText)findViewById(R.id.input);
+        send.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				loader.postMessage("test", message.getText().toString());
+				message.setText("");
+			}
+		});
         
         final String name = getIntent().getStringExtra(INTENT_EXTRA_CHANNEL_NAME);
         final String id = getIntent().getStringExtra(INTENT_EXTRA_CHANNEL_ID);
@@ -35,30 +51,46 @@ public class ChatActivity extends ListActivity {
         channelName = (TextView)findViewById(R.id.channel_name);
         channelName.setText(channel.name);
         
-        handler.sendEmptyMessage(0);
+        loader = new LoaderThread();
+        loader.enteringChatRoom("test", channel, new MyChannelEventHandler());
     }
     
+    @Override
+	protected void onDestroy() {
+		super.onDestroy();
+		loader.leaveChatRoom();
+	}
+    
+	private class MyChannelEventHandler implements ChannelEventHandler {
+
+		@Override
+		public void onOpen() {
+			Log.w(TAG, "activity onOpen");
+		}
+
+		@Override
+		public void onMessage(ChatMessage message) {
+			Log.w(TAG, "activity onMessage message:" + message);
+			handler.sendMessage(handler.obtainMessage(0, message));
+		}
+
+		@Override
+		public void onClose() {
+			Log.w(TAG, "activity onClose");
+			Toast.makeText(ChatActivity.this, "Chat room closed.", Toast.LENGTH_LONG).show();
+			ChatActivity.this.finish();
+		}
+    	
+    }
+
     private Handler handler = new Handler() {
 
-    	Random random = new Random(System.currentTimeMillis());
 		@Override
 		public void handleMessage(Message msg) {
-			ChatMessage chat = new ChatMessage();
-			chat.iconRes = R.drawable.user;
-			chat.name = names[random.nextInt(names.length)];
-			chat.message = messages[random.nextInt(messages.length)];
-			
+			ChatMessage chat = (ChatMessage)msg.obj;
 			adapter.add(chat);
-			
-			this.sendEmptyMessageDelayed(0, 1000);
 		}
     	
     };
-    final String[] names = new String[] {"Chen", "Wang", "Lin", "Joe", "Michael"};
-    final String[] messages = new String[] {
-    		"Startup Weekend is a global network of passionate leaders and entrepreneurs on a mission to inspire, educate, and empower individuals, teams and communities.", 
-    		"Come share ideas, form teams, and launch startups.", 
-    		"Call us biased, but we think that there are dozens of reasons why you should come to a Startup Weekend!", 
-    		"Local tech and startup leaders participate in Startup Weekends as mentors and judges.", 
-    		"Join over 30,000 Startup Weekend alumni, all on a mission to change the world."};
+    
 }

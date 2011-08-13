@@ -85,7 +85,7 @@ public class ChannelClient {
 			}
 		}
 
-	private void message(String message) throws JSONException,
+	public void message(String message) throws JSONException,
 			WebSocketException {
 		JSONObject msg = new JSONObject()
 		.put("action", "message")
@@ -93,7 +93,7 @@ public class ChannelClient {
 		message(msg);
 	}
 
-	private void join(String user, int channel) throws JSONException,
+	public void join(String user, int channel) throws JSONException,
 			WebSocketException {
 		JSONObject login = new JSONObject()
 			.put("action", "join")
