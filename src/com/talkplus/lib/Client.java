@@ -27,7 +27,7 @@ public class Client {
 				JSONObject obj = result.getJSONObject(i);
 				list.add(new Channel(obj.optString("name"), obj.optString("id")));
 			}
-			ready.call(list);
+			ready.ready(list);
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
