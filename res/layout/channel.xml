@@ -8,6 +8,6 @@
   	<TextView android:id="@id/name"
   		android:layout_width="fill_parent"
   		android:layout_height="?android:attr/listPreferredItemHeight"
-  		android:textSize="36sp" />
+  		android:textSize="24sp" />
     
 </LinearLayout>

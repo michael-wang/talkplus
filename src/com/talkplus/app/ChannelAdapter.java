@@ -20,13 +20,15 @@ public class ChannelAdapter extends BaseAdapter {
 		channels = new ArrayList<Channel>();
 	}
 	
-	public void add(Channel channel) {
+	public void reset(Channel channel) {
+		channels.clear();
 		channels.add(channel);
 		notifyDataSetChanged();
 	}
 	
-	public void add(List<Channel> channels) {
-		channels.addAll(channels);
+	public void reset(List<Channel> list) {
+		channels.clear();
+		channels.addAll(list);
 		notifyDataSetChanged();
 	}
 	
