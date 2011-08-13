@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="channel_name"/>
+    <item type="id" name="input"/>
+    <item type="id" name="send" />
+    <item type="id" name="icon" />
+    <item type="id" name="name" />
+    <item type="id" name="message" />
+</resources>
