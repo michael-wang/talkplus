@@ -1,52 +1,47 @@
 package com.talkplus.app;
 
-import java.util.Random;
-
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.widget.TextView;
+import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
 
 public class TalkPlusActivity extends ListActivity {
     
-	private TextView channelName;
-	private MessageAdapter adapter;
-    @Override
+	private static final String TAG = "talkplus";
+	
+	private ChannelAdapter adapter;
+	
+	@Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.chatroom);
-        
-        adapter = new MessageAdapter(this);
-        getListView().setAdapter(adapter);
-        
-        channelName = (TextView)findViewById(R.id.channel_name);
-        channelName.setText("Channel Title");
-        
-        handler.sendEmptyMessage(0);
-    }
-    
-    private Handler handler = new Handler() {
-
-    	Random random = new Random(System.currentTimeMillis());
-		@Override
-		public void handleMessage(Message msg) {
-			ChatMessage chat = new ChatMessage();
-			chat.iconRes = R.drawable.user;
-			chat.name = names[random.nextInt(names.length)];
-			chat.message = messages[random.nextInt(messages.length)];
-			
-			adapter.add(chat);
-			
-			this.sendEmptyMessageDelayed(0, 1000);
-		}
-    	
-    };
-    final String[] names = new String[] {"Chen", "Wang", "Lin", "Joe", "Michael"};
-    final String[] messages = new String[] {
-    		"Startup Weekend is a global network of passionate leaders and entrepreneurs on a mission to inspire, educate, and empower individuals, teams and communities.", 
-    		"Come share ideas, form teams, and launch startups.", 
-    		"Call us biased, but we think that there are dozens of reasons why you should come to a Startup Weekend!", 
-    		"Local tech and startup leaders participate in Startup Weekends as mentors and judges.", 
-    		"Join over 30,000 Startup Weekend alumni, all on a mission to change the world."};
+		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.chat_list);
+		
+		adapter = new ChannelAdapter(this);
+		getListView().setAdapter(adapter);
+		
+		// test only
+		onReceiveChannelList(new Channel("test", "1"));
+	}
+	
+	private void onReceiveChannelList(Channel channel) {
+		adapter.add(channel);
+	}
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		Channel c = (Channel)adapter.getItem(position);
+		gotoChannelRoom(c);
+	}
+	
+	private void gotoChannelRoom(Channel channel) {
+		Log.d(TAG, "gotoChannelRoom channel:" + channel);
+		Intent invokeChannelRoom = new Intent(Intent.ACTION_VIEW);
+		invokeChannelRoom.setClass(this, ChatActivity.class);
+		invokeChannelRoom.putExtra(ChatActivity.INTENT_EXTRA_CHANNEL_NAME, channel.name);
+		invokeChannelRoom.putExtra(ChatActivity.INTENT_EXTRA_CHANNEL_ID, channel.id);
+		this.startActivity(invokeChannelRoom);
+	}
 }
