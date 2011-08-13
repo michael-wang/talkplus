@@ -51,7 +51,51 @@ public class LoaderThread {
 						channelClient = new ChannelClient();
 					}
 					Log.d(TAG, "loader before connect");
-					channelClient.connect((Channel)msg.obj, clientEventHandler);
+					channelClient.connect(clientEventHandler);
+					Log.d(TAG, "loader after connect");
+					break;
+				case MSG_JOIN:
+				{
+					JoinParam param = (JoinParam)msg.obj;
+					try {
+						Log.d(TAG, "loader before join");
+						channelClient.join(param.name, param.channel);
+						Log.d(TAG, "loader after join");
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (WebSocketException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+					break;
+				case MSG_POST:
+					try {
+						channelClient.message((String)msg.obj);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (WebSocketException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					break;
+				}
+				switch(msg.what) {
+				case MSG_GET_CHANNEL_LIST:
+					com.talkplus.util.Callback< ArrayList<Channel> > callback = 
+						(com.talkplus.util.Callback< ArrayList<Channel> >)msg.obj;
+					Log.d(TAG, "loader handleMessage msg:" + msg);
+					Client.getRecent(callback);
+					Log.d(TAG, "loader handleMessage Client.getRecent returns");
+					break;
+				case MSG_CONNECT:
+					if(channelClient == null) {
+						channelClient = new ChannelClient();
+					}
+					Log.d(TAG, "loader before connect");
+					channelClient.connect(clientEventHandler);
 					Log.d(TAG, "loader after connect");
 					break;
 				case MSG_JOIN:

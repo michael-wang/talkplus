@@ -24,7 +24,7 @@ public class ChannelClient {
 		super();
 	}
 	
-	public void connect(Channel channel, ChannelEventHandler handler){
+	public void connect(ChannelEventHandler handler){
 		this.handler = handler;
 		try {
 	        URI url = new URI("ws://api.talkpl.us/websocket");
@@ -42,7 +42,7 @@ public class ChannelClient {
 	                        System.out.println("--received message: " + message.getText());
 							try {
 								JSONObject msg = new JSONObject(message.getText());
-								if(msg.optString("action").equals("control")){
+								if(msg.optString("action").equals("message")){
 		                        	ChannelClient.this.handler.onMessage(new ChatMessage(0, msg.optString("user"), msg.optString("message")));
 		                        } 
 							} catch (JSONException e) {
