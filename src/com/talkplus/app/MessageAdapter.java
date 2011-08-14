@@ -3,6 +3,7 @@ package com.talkplus.app;
 import java.util.LinkedList;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,9 +65,21 @@ public class MessageAdapter extends BaseAdapter {
 		ChatMessage m = messages.get(position);
 		if(m != null) {
 //			Log.d(TAG, "adapter getView position:" + position + ",holder:" + holder);
-			holder.icon.setImageResource(R.drawable.user);
+			holder.icon.setImageResource(m.iconRes);
 			holder.name.setText(m.name);
 			holder.message.setText(m.message);
+			if(m.type == ChatMessage.MessageType.NORMAL) {
+				holder.name.setTextColor(Color.BLACK);
+				holder.message.setTextColor(Color.BLACK);
+			} else if(m.type == ChatMessage.MessageType.USER_JOINED){
+				holder.icon.setVisibility(View.GONE);
+				holder.name.setTextColor(Color.RED);
+				holder.message.setTextColor(Color.RED);
+			} else if(m.type == ChatMessage.MessageType.USER_LEFT){
+				holder.icon.setVisibility(View.GONE);
+				holder.name.setTextColor(Color.GRAY);
+				holder.message.setTextColor(Color.GRAY);
+			}
 		}
 		return view;
 	}
