@@ -1,7 +1,6 @@
 package com.talkplus.app;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 
 import android.content.Context;
 import android.util.Log;
@@ -15,7 +14,9 @@ import android.widget.TextView;
 public class MessageAdapter extends BaseAdapter {
 
 	private static final String TAG = "talkplus";
-	private List<ChatMessage> messages = new ArrayList<ChatMessage>();
+	private static final int MAX_MESSAGE_COUNT = 256;
+	
+	private LinkedList<ChatMessage> messages = new LinkedList<ChatMessage>();
 	private LayoutInflater inflater;
 	public MessageAdapter(Context context) {
 		inflater = LayoutInflater.from(context);
@@ -23,7 +24,10 @@ public class MessageAdapter extends BaseAdapter {
 	
 	public void add(ChatMessage msg) {
 		Log.d(TAG, "adapter msg:" + msg);
-		messages.add(msg);
+		if(messages.size() >= MAX_MESSAGE_COUNT) {
+			messages.removeFirst();
+		}
+		messages.addLast(msg);
 		notifyDataSetChanged();
 	}
 	
@@ -58,11 +62,12 @@ public class MessageAdapter extends BaseAdapter {
 		}
 		
 		ChatMessage m = messages.get(position);
-		Log.d(TAG, "adapter getView position:" + position + ",holder:" + holder);
-		holder.icon.setImageResource(R.drawable.user);
-		holder.name.setText(m.name);
-		holder.message.setText(m.message);
-		
+		if(m != null) {
+			Log.d(TAG, "adapter getView position:" + position + ",holder:" + holder);
+			holder.icon.setImageResource(R.drawable.user);
+			holder.name.setText(m.name);
+			holder.message.setText(m.message);
+		}
 		return view;
 	}
 	
