@@ -41,7 +41,7 @@ public class ChatActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatroom);
         
-        onPreExecute();
+        //onPreExecute();
         userName = getUserName();
         
         Button send = (Button)findViewById(R.id.send);
@@ -107,12 +107,12 @@ public class ChatActivity extends ListActivity {
 		public void onOpen() {
 			Log.w(TAG, "activity onOpen");
 			
-			//To close progressDlg
-			runOnUiThread(new Runnable() {
-			    public void run() {
-			        progressDlg.dismiss();
-			    }
-			});
+//			//To close progressDlg
+//			runOnUiThread(new Runnable() {
+//			    public void run() {
+//			        progressDlg.dismiss();
+//			    }
+//			});
 			
 		}
 
