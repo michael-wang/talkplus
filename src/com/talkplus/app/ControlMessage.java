@@ -10,7 +10,7 @@ public class ControlMessage {
 	public ControlMessage(){}
 	
 	public ControlMessage(JSONObject obj) {
-		this(obj.optString("name"), obj.optString("id"));
+		this(obj.optString("user"), obj.optString("message"));
 		this.users_count = obj.optInt("users_count");
 	}
 	
