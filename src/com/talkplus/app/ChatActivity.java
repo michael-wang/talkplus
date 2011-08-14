@@ -137,6 +137,14 @@ public class ChatActivity extends ListActivity {
 			case MSG_ON_CONTROL:
 			{
 				ControlMessage cm = (ControlMessage)msg.obj;
+				boolean left = cm.message.contains("left") ? true : false;
+				ChatMessage newUser = new ChatMessage(
+						left ? ChatMessage.MessageType.USER_LEFT : ChatMessage.MessageType.USER_JOINED,
+						android.R.drawable.ic_dialog_alert, 
+						cm.name, cm.message);
+				adapter.add(newUser);
+				scrollToBottom();
+				
 				updateUserCount(cm.users_count);
 			}
 				break;
