@@ -70,7 +70,7 @@ public class ChannelClient {
 		JSONObject msg = new JSONObject()
 		.put("action", "message")
 		.put("message", message);
-		message(msg);
+		send(msg);
 	}
 
 	public void join(String user, int channel) throws JSONException,
@@ -79,17 +79,12 @@ public class ChannelClient {
 			.put("action", "join")
 			.put("user", user)
 			.put("channel", channel);
-		join(login);
+		send(login);
 	}
 
-	public void message(JSONObject msg) throws WebSocketException {
+	private void send(JSONObject msg) throws WebSocketException {
 		System.out.println(msg.toString());
 		websocket.send(msg.toString());
-	}
-
-	public void join(JSONObject login) throws WebSocketException {
-		System.out.println(login.toString());
-		websocket.send(login.toString());
 	}
 	
 	public void close() throws WebSocketException{
