@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import com.talkplus.app.Channel;
 import com.talkplus.app.ChatMessage;
+import com.talkplus.app.ControlMessage;
 
 import de.roderick.weberknecht.WebSocket;
 import de.roderick.weberknecht.WebSocketConnection;
@@ -42,9 +43,12 @@ public class ChannelClient {
 	                        System.out.println("--received message: " + message.getText());
 							try {
 								JSONObject msg = new JSONObject(message.getText());
-								if(msg.optString("action").equals("message")){
+								String action = msg.optString("action");
+								if(action.equals("message")){
 		                        	ChannelClient.this.handler.onMessage(new ChatMessage(0, msg.optString("user"), msg.optString("message")));
-		                        } 
+		                        } else if(action.equals("control")){
+		                        	ChannelClient.this.handler.onControl(new ControlMessage(msg));
+		                        }
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
