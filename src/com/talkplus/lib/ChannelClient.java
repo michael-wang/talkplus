@@ -32,61 +32,38 @@ public class ChannelClient {
 	        
 	        // Register Event Handlers
 	        websocket.setEventHandler(new WebSocketEventHandler() {
-	                public void onOpen()
-	                {
-	                        System.out.println("--open");
-	                        ChannelClient.this.handler.onOpen();
-	                }         
-	                public void onMessage(WebSocketMessage message)
-	                {
-	                        System.out.println("--received message: " + message.getText());
-							try {
-								JSONObject msg = new JSONObject(message.getText());
-								String action = msg.optString("action");
-								if(action.equals("message")){
-		                        	ChannelClient.this.handler.onMessage(new ChatMessage(0, msg.optString("user"), msg.optString("message")));
-		                        } else if(action.equals("control")){
-		                        	ChannelClient.this.handler.onControl(new ControlMessage(msg));
-		                        }
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-	                                   
-	                }
-	                public void onClose()
-	                {
-	                        System.out.println("--close");
-	                        ChannelClient.this.handler.onClose();
-	                }
+                public void onOpen() {
+                        System.out.println("--open");
+                        ChannelClient.this.handler.onOpen();
+                }         
+                public void onMessage(WebSocketMessage message) {
+                        System.out.println("--received message: " + message.getText());
+						try {
+							JSONObject msg = new JSONObject(message.getText());
+							String action = msg.optString("action");
+							if(action.equals("message")){
+	                        	ChannelClient.this.handler.onMessage(new ChatMessage(0, msg.optString("user"), msg.optString("message")));
+	                        } else if(action.equals("control")){
+	                        	ChannelClient.this.handler.onControl(new ControlMessage(msg));
+	                        }
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+                                   
+                }
+                public void onClose() {
+                        System.out.println("--close");
+                        ChannelClient.this.handler.onClose();
+                }
 	        });
-	        
 	        // Establish WebSocket Connection
 	        websocket.connect();
-	        
-	        // Send UTF-8 Text
-//	        try {
-//	        	String user = "sleepnova";
-//				int ch = 1;
-//				join(user, ch);
-//				
-//				String message = "hello!";
-//				message(message);
-//			
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			
-	        // Close WebSocket Connection
-//	        websocket.close();
-			}
-			catch (WebSocketException wse) {
-			        wse.printStackTrace();
-			}
-			catch (URISyntaxException use) {
-			        use.printStackTrace();
-			}
+		} catch (WebSocketException wse) {
+		        wse.printStackTrace();
+		} catch (URISyntaxException use) {
+		        use.printStackTrace();
 		}
+	}
 
 	public void message(String message) throws JSONException,
 			WebSocketException {
