@@ -69,6 +69,7 @@ public class MessageAdapter extends BaseAdapter {
 			holder.name.setText(m.name);
 			holder.message.setText(m.message);
 			if(m.type == ChatMessage.MessageType.NORMAL) {
+				holder.name.setTextColor(Color.BLACK);
 				holder.message.setTextColor(Color.BLACK);
 			} else if(m.type == ChatMessage.MessageType.USER_JOINED){
 				holder.icon.setVisibility(View.GONE);
