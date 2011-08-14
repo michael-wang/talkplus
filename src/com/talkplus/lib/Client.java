@@ -25,7 +25,7 @@ public class Client {
 			JSONArray result = new JSONArray(get("http://www.talkpl.us/channels/recent.json"));
 			for(int i=0; i<result.length(); i++) {
 				JSONObject obj = result.getJSONObject(i);
-				list.add(new Channel(obj.optString("name"), obj.optString("id")));
+				list.add(new Channel(obj));
 			}
 			ready.ready(list);
 		} catch (ClientProtocolException e) {
