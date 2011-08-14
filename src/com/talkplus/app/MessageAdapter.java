@@ -63,7 +63,7 @@ public class MessageAdapter extends BaseAdapter {
 		
 		ChatMessage m = messages.get(position);
 		if(m != null) {
-			Log.d(TAG, "adapter getView position:" + position + ",holder:" + holder);
+//			Log.d(TAG, "adapter getView position:" + position + ",holder:" + holder);
 			holder.icon.setImageResource(R.drawable.user);
 			holder.name.setText(m.name);
 			holder.message.setText(m.message);
