@@ -7,4 +7,5 @@
     <item type="id" name="name" />
     <item type="id" name="message" />
     <item type="id" name="user_count" />
+    <item type="id" name="channel_count" />
 </resources>

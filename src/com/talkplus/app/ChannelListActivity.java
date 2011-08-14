@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.talkplus.util.Callback;
 
@@ -25,6 +26,7 @@ public class ChannelListActivity extends ListActivity {
 	private LoaderThread loader = new LoaderThread();
 	private ChannelListCallback channelCallback = new ChannelListCallback();
 	private ProgressDialog progressDlg;
+	private TextView channelCount;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +44,8 @@ public class ChannelListActivity extends ListActivity {
 	        .show();
 		}
 		
+		channelCount = (TextView)findViewById(R.id.channel_count);
+		showChannelCount(0);
 		
 		adapter = new ChannelAdapter(this);
 		getListView().setAdapter(adapter);
@@ -54,15 +58,20 @@ public class ChannelListActivity extends ListActivity {
 		loader.getChannelList(channelCallback);
 	}
 	
-	private void onReceiveChannelList(List<Channel> channels) {
+	private void onReceiveChannelList(final List<Channel> channels) {
 		adapter.reset(channels);
 		//To close progressDlg
 		runOnUiThread(new Runnable() {
 		    public void run() {
 		        progressDlg.dismiss();
+		        showChannelCount(channels.size());
 		    }
 		});
 		
+	}
+	
+	private void showChannelCount(int count) {
+		channelCount.setText("#channels: " + count);
 	}
 	
 	@Override
