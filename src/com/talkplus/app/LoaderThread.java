@@ -81,6 +81,14 @@ public class LoaderThread {
 						e.printStackTrace();
 					}
 					break;
+				case MSG_CLOSE:
+					try {
+						channelClient.close();
+					} catch (WebSocketException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					break;
 				}
 			}
 		};
@@ -111,12 +119,7 @@ public class LoaderThread {
 	}
 	
 	public void leaveChatRoom() {
-		try {
-			channelClient.close();
-		} catch (WebSocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		handler.sendEmptyMessage(MSG_CLOSE);
 	}
 
 }

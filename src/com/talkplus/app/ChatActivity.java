@@ -2,6 +2,8 @@ package com.talkplus.app;
 
 import java.util.Random;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,8 +60,16 @@ public class ChatActivity extends ListActivity {
     }
     
     private String getUserName() {
-    	Random r = new Random();
-    	return "test" + r.nextInt(1000);
+    	Account[] googleAccounts = AccountManager.get(ChatActivity.this)
+    		.getAccountsByType("com.google");
+    	if(googleAccounts == null) {
+    		Log.w(TAG, "no account found, gen random name!");
+        	Random r = new Random();
+        	return "test" + r.nextInt(1000);
+    	}
+    	Log.d(TAG, "account:" + googleAccounts[0]);
+    	final String accountName = googleAccounts[0].name;
+    	return accountName.substring(0, accountName.lastIndexOf("@"));
     }
     
     @Override
