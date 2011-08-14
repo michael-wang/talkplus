@@ -88,24 +88,34 @@ public class ChatActivity extends ListActivity {
 		@Override
 		public void onMessage(ChatMessage message) {
 			Log.w(TAG, "activity onMessage message:" + message);
-			handler.sendMessage(handler.obtainMessage(0, message));
+			handler.sendMessage(handler.obtainMessage(MSG_ADD_CHAT_MESSAGE, message));
 		}
 
 		@Override
 		public void onClose() {
 			Log.w(TAG, "activity onClose");
-			Toast.makeText(ChatActivity.this, "Chat room closed.", Toast.LENGTH_LONG).show();
-			ChatActivity.this.finish();
+			handler.sendEmptyMessage(MSG_ON_CLOSE);
 		}
     	
     }
 
+	private static final int MSG_ADD_CHAT_MESSAGE = 1;
+	private static final int MSG_ON_CLOSE = 2;
     private Handler handler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
-			ChatMessage chat = (ChatMessage)msg.obj;
-			adapter.add(chat);
+			switch(MSG_ADD_CHAT_MESSAGE) {
+			case MSG_ADD_CHAT_MESSAGE:
+				ChatMessage chat = (ChatMessage)msg.obj;
+				adapter.add(chat);
+				getListView().setSelection(adapter.getCount()-1);
+				break;
+			case MSG_ON_CLOSE:
+				Toast.makeText(ChatActivity.this, "Chat room closed.", Toast.LENGTH_LONG).show();
+				ChatActivity.this.finish();
+				break;
+			}
 		}
     	
     };
