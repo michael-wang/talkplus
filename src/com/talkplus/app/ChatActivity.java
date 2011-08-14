@@ -5,6 +5,7 @@ import java.util.Random;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,11 +33,15 @@ public class ChatActivity extends ListActivity {
 	private MessageAdapter adapter;
 	private LoaderThread loader;
 	private int userCount;
+	private ProgressDialog progressDlg;
+	
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatroom);
         
+        onPreExecute();
         userName = getUserName();
         
         Button send = (Button)findViewById(R.id.send);
@@ -88,11 +93,27 @@ public class ChatActivity extends ListActivity {
 		loader.leaveChatRoom();
 	}
     
-	private class MyChannelEventHandler implements ChannelEventHandler {
+    protected void onPreExecute() {		
+		progressDlg = new ProgressDialog(ChatActivity.this);
+		progressDlg.setCancelable(false);
+		progressDlg.setMessage("Entering event chat room...");			  
+		progressDlg.setIndeterminate(true);
+		progressDlg.show();				
+	}//end method
+    
+    private class MyChannelEventHandler implements ChannelEventHandler {
 
 		@Override
 		public void onOpen() {
 			Log.w(TAG, "activity onOpen");
+			
+			//To close progressDlg
+			runOnUiThread(new Runnable() {
+			    public void run() {
+			        progressDlg.dismiss();
+			    }
+			});
+			
 		}
 
 		@Override

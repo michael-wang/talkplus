@@ -3,7 +3,12 @@ package com.talkplus.app;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,12 +24,24 @@ public class ChannelListActivity extends ListActivity {
 	private ChannelAdapter adapter;
 	private LoaderThread loader = new LoaderThread();
 	private ChannelListCallback channelCallback = new ChannelListCallback();
+	private ProgressDialog progressDlg;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.chat_list);
+		if (isNetworkAvailable()){
+			onPreExecute();		  
+		}
+		else{
+			new AlertDialog.Builder(ChannelListActivity.this)
+	        .setTitle("Connection error!")
+	        .setMessage("There is no Internet connection!")
+	        .setCancelable(true)
+	        .setNeutralButton("Close", null)
+	        .show();
+		}
+		
 		
 		adapter = new ChannelAdapter(this);
 		getListView().setAdapter(adapter);
@@ -39,6 +56,13 @@ public class ChannelListActivity extends ListActivity {
 	
 	private void onReceiveChannelList(List<Channel> channels) {
 		adapter.reset(channels);
+		//To close progressDlg
+		runOnUiThread(new Runnable() {
+		    public void run() {
+		        progressDlg.dismiss();
+		    }
+		});
+		
 	}
 	
 	@Override
@@ -73,4 +97,25 @@ public class ChannelListActivity extends ListActivity {
 		}
 		
 	}
+	protected void onPreExecute() {		
+		progressDlg = new ProgressDialog(ChannelListActivity.this);
+		progressDlg.setCancelable(false);
+		progressDlg.setMessage("Connecting to TalkPlus server...");			  
+		
+		
+		progressDlg.setIndeterminate(true);
+		progressDlg.show();				
+	}//end method
+	
+    public static boolean isNetworkAvailable() {
+    	boolean responded = false;
+    	HttpGet requestForTest = new HttpGet("http://m.google.com");
+    	try {
+    		new DefaultHttpClient().execute(requestForTest); // can last...
+            responded = true;
+            
+    	} catch (Exception e) {}
+     	return responded;
+    }
+	
 }
