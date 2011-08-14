@@ -53,6 +53,7 @@ public class ChannelListActivity extends ListActivity {
 		invokeChannelRoom.setClass(this, ChatActivity.class);
 		invokeChannelRoom.putExtra(ChatActivity.INTENT_EXTRA_CHANNEL_NAME, channel.name);
 		invokeChannelRoom.putExtra(ChatActivity.INTENT_EXTRA_CHANNEL_ID, channel.id);
+		invokeChannelRoom.putExtra(ChatActivity.INTENT_EXTRA_CHANNEL_DESCRIPTION, channel.description);
 		this.startActivity(invokeChannelRoom);
 	}
 	

@@ -2,8 +2,6 @@ package com.talkplus.app;
 
 import java.util.Random;
 
-import org.json.JSONObject;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.ListActivity;
@@ -23,14 +21,17 @@ public class ChatActivity extends ListActivity {
 	
 	public static final String INTENT_EXTRA_CHANNEL_NAME = "name";
 	public static final String INTENT_EXTRA_CHANNEL_ID = "id";
+	public static final String INTENT_EXTRA_CHANNEL_DESCRIPTION = "description";
 	
 	private static final String TAG = "talkplus";
 	
 	private Channel channel;
 	private TextView channelName;
+	private TextView userCountText;
 	private String userName;
 	private MessageAdapter adapter;
 	private LoaderThread loader;
+	private int userCount;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,14 +52,18 @@ public class ChatActivity extends ListActivity {
         
         final String name = getIntent().getStringExtra(INTENT_EXTRA_CHANNEL_NAME);
         final String id = getIntent().getStringExtra(INTENT_EXTRA_CHANNEL_ID);
-        Log.d(TAG, "name:" + name + ",id:" + id);
-        channel = new Channel(name, id);
+        final String description = getIntent().getStringExtra(INTENT_EXTRA_CHANNEL_DESCRIPTION);
+        Log.d(TAG, "name:" + name + ",id:" + id + ",description:" + description);
+        channel = new Channel(name, id, description);
         
         adapter = new MessageAdapter(this);
         getListView().setAdapter(adapter);
         
         channelName = (TextView)findViewById(R.id.channel_name);
         channelName.setText(channel.name);
+        
+        userCountText = (TextView)findViewById(R.id.user_count);
+        updateUserCount(1);
         
         loader = new LoaderThread();
         loader.enteringChatRoom(userName, channel, new MyChannelEventHandler());
@@ -101,28 +106,51 @@ public class ChatActivity extends ListActivity {
 			Log.w(TAG, "activity onClose");
 			handler.sendEmptyMessage(MSG_ON_CLOSE);
 		}
+
+		@Override
+		public void onControl(ControlMessage msg) {
+			Log.w(TAG, "activity onControl msg:" + msg);
+			handler.sendMessage(handler.obtainMessage(MSG_ON_CONTROL, msg));
+		}
     	
     }
 
 	private static final int MSG_ADD_CHAT_MESSAGE = 1;
 	private static final int MSG_ON_CLOSE = 2;
+	private static final int MSG_ON_CONTROL = 3;
     private Handler handler = new Handler() {
 
 		@Override
 		public void handleMessage(Message msg) {
-			switch(MSG_ADD_CHAT_MESSAGE) {
+			switch(msg.what) {
 			case MSG_ADD_CHAT_MESSAGE:
+			{
 				ChatMessage chat = (ChatMessage)msg.obj;
 				adapter.add(chat);
-				getListView().setSelection(adapter.getCount()-1);
+				scrollToBottom();
+			}
 				break;
 			case MSG_ON_CLOSE:
 				Toast.makeText(ChatActivity.this, "Chat room closed.", Toast.LENGTH_LONG).show();
 				ChatActivity.this.finish();
+				break;
+			case MSG_ON_CONTROL:
+			{
+				ControlMessage cm = (ControlMessage)msg.obj;
+				updateUserCount(cm.users_count);
+			}
 				break;
 			}
 		}
     	
     };
     
+    private void scrollToBottom() {
+    	getListView().setSelection(adapter.getCount()-1);
+    }
+    
+    private void updateUserCount(int newCount) {
+    	userCount = newCount;
+    	userCountText.setText("(" + userCount + " people)");
+    }
 }

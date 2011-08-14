@@ -6,4 +6,5 @@
     <item type="id" name="icon" />
     <item type="id" name="name" />
     <item type="id" name="message" />
+    <item type="id" name="user_count" />
 </resources>

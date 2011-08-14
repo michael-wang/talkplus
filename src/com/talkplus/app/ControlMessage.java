@@ -20,7 +20,7 @@ public class ControlMessage {
 	}
 	@Override
 	public String toString() {
-		return "ChatMessage name:" + name + ",msg:" + message;
+		return "ChatMessage name:" + name + ",msg:" + message + ",users_count:" + users_count;
 	}
 	
 }

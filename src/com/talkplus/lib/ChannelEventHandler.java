@@ -1,7 +1,5 @@
 package com.talkplus.lib;
 
-import org.json.JSONObject;
-
 import com.talkplus.app.ChatMessage;
 import com.talkplus.app.ControlMessage;
 

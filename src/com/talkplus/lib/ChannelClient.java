@@ -6,7 +6,6 @@ import java.net.URISyntaxException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.talkplus.app.Channel;
 import com.talkplus.app.ChatMessage;
 import com.talkplus.app.ControlMessage;
 
