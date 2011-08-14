@@ -26,6 +26,7 @@ public class ChatActivity extends ListActivity {
 	
 	private Channel channel;
 	private TextView channelName;
+	private String userName;
 	private MessageAdapter adapter;
 	private LoaderThread loader;
     @Override
@@ -33,13 +34,15 @@ public class ChatActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chatroom);
         
+        userName = getUserName();
+        
         Button send = (Button)findViewById(R.id.send);
         final EditText message = (EditText)findViewById(R.id.input);
         send.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				loader.postMessage("test", message.getText().toString());
+				loader.postMessage(userName, message.getText().toString());
 				message.setText("");
 			}
 		});
@@ -56,7 +59,7 @@ public class ChatActivity extends ListActivity {
         channelName.setText(channel.name);
         
         loader = new LoaderThread();
-        loader.enteringChatRoom(getUserName(), channel, new MyChannelEventHandler());
+        loader.enteringChatRoom(userName, channel, new MyChannelEventHandler());
     }
     
     private String getUserName() {

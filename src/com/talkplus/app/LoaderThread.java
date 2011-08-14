@@ -58,9 +58,9 @@ public class LoaderThread {
 				{
 					JoinParam param = (JoinParam)msg.obj;
 					try {
-						Log.d(TAG, "loader before join");
+						Log.d(TAG, "loader BEFORE join name:" + param.name + ",channel:" + param.channel);
 						channelClient.join(param.name, param.channel);
-						Log.d(TAG, "loader after join");
+						Log.d(TAG, "loader AFTER join name:" + param.name + ",channel:" + param.channel);
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
