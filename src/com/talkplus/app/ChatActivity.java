@@ -6,6 +6,8 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -72,6 +74,7 @@ public class ChatActivity extends ListActivity {
         
         loader = new LoaderThread();
         loader.enteringChatRoom(userName, channel, new MyChannelEventHandler());
+        onPreExecute();
     }
     
     private String getUserName() {
@@ -95,9 +98,14 @@ public class ChatActivity extends ListActivity {
     
     protected void onPreExecute() {		
 		progressDlg = new ProgressDialog(ChatActivity.this);
-		progressDlg.setCancelable(false);
+		progressDlg.setCancelable(true);
 		progressDlg.setMessage("Entering event chat room...");			  
 		progressDlg.setIndeterminate(true);
+		progressDlg.setOnCancelListener(new OnCancelListener(){
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				finish();
+			}});
 		progressDlg.show();				
 	}//end method
     
@@ -107,12 +115,11 @@ public class ChatActivity extends ListActivity {
 		public void onOpen() {
 			Log.w(TAG, "activity onOpen");
 			
-//			//To close progressDlg
-//			runOnUiThread(new Runnable() {
-//			    public void run() {
-//			        progressDlg.dismiss();
-//			    }
-//			});
+			runOnUiThread(new Runnable() {
+			    public void run() {
+			        progressDlg.dismiss();
+			    }
+			});
 			
 		}
 

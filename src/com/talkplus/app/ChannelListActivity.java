@@ -9,7 +9,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.DialogInterface.OnCancelListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,17 +34,7 @@ public class ChannelListActivity extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chat_list);
-		if (isNetworkAvailable()){
-			onPreExecute();		  
-		}
-		else{
-			new AlertDialog.Builder(ChannelListActivity.this)
-	        .setTitle("Connection error!")
-	        .setMessage("There is no Internet connection!")
-	        .setCancelable(true)
-	        .setNeutralButton("Close", null)
-	        .show();
-		}
+		onPreExecute();		  
 		
 		channelCount = (TextView)findViewById(R.id.channel_count);
 		showChannelCount(0);
@@ -108,23 +100,15 @@ public class ChannelListActivity extends ListActivity {
 	}
 	protected void onPreExecute() {		
 		progressDlg = new ProgressDialog(ChannelListActivity.this);
-		progressDlg.setCancelable(false);
+		progressDlg.setCancelable(true);
 		progressDlg.setMessage("Connecting to TalkPlus server...");			  
-		
-		
 		progressDlg.setIndeterminate(true);
+		progressDlg.setOnCancelListener(new OnCancelListener(){
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				finish();
+			}});
 		progressDlg.show();				
 	}//end method
-	
-    public static boolean isNetworkAvailable() {
-    	boolean responded = false;
-    	HttpGet requestForTest = new HttpGet("http://m.google.com");
-    	try {
-    		new DefaultHttpClient().execute(requestForTest); // can last...
-            responded = true;
-            
-    	} catch (Exception e) {}
-     	return responded;
-    }
 	
 }
